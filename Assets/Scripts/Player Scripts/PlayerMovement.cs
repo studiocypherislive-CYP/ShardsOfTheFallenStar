@@ -11,12 +11,13 @@ public class PlayerMovement : MonoBehaviour
 {
     public int maxHealth = 3;
     public Text health;
-    public float speed = 7f;
     private float movement;
-    public float jumpHeight = 8f;
-
+    public float speed = 7f;
+    private bool facing_Right;
     private Rigidbody2D rb;
+    public float jumpHeight = 8f;
     private Animator animator;
+
     private bool isGround;
     private bool wasGrounded; // Track previous ground state
 
@@ -31,7 +32,6 @@ public class PlayerMovement : MonoBehaviour
     public float attackRadius = 1f;
     public LayerMask attackLayer;
 
-    private bool facing_Right;
 
     private void Start()
     {
@@ -94,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             PlayAttackAnimation();
+            
         }
 
     }
@@ -164,13 +165,10 @@ public class PlayerMovement : MonoBehaviour
 
     public void Attack()
     {
-        Collider2D collInfo = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
-        if (collInfo)
+        Collider2D hit = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
+        if (hit)
         {
-            if (collInfo.gameObject.GetComponent<EnemyController>() != null)
-            {
-                collInfo.gameObject.GetComponent<EnemyController>().TakeDamage(1);
-            }
+            FindAnyObjectByType<EnemyController>().TakeDamage();
         }
     }
 
@@ -194,6 +192,7 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+        Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 
