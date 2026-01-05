@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    //public int maxHealth = 5;
-    private bool facingRight;
+    public Transform attackPoint;
+    public float attackRadius = 1f;
+    public LayerMask attackLayer;
+
     public float Speed = 2f;
+    private bool facingRight;
     public Animator animator;
     public int maxHealth = 3;
 
@@ -79,6 +82,15 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    public void Attack()
+    {
+        Collider2D hit = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
+        if (hit == true)
+        {
+            FindAnyObjectByType<PlayerMovement>().TakeDamage();
+        }
+    }
+
     public void TakeDamage()
     {
         if (maxHealth <= 0)
@@ -99,12 +111,16 @@ public class EnemyController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(detectPoint.position, Vector2.down * distance);
 
+        if (attackPoint == null)
+        {
+            return;
+        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
+
         //Gizmos.color = Color.red;
         //Gizmos.DrawWireSphere(transform.position, attackRange);
 
-        //if (attackPoint == null) return;
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 
     private void Die()

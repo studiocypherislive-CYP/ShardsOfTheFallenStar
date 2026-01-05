@@ -203,8 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efbc5b4c93b921e4c87688d57c640167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  maxHealth: 3
-  health: {fileID: 0}
+  maxHealth: 10
   speed: 8
   jumpHeight: 10
   groundCheckPoint: {fileID: 3259157392164355379}
@@ -218,6 +217,7 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 128
+  healthText: {fileID: 0}
 --- !u!1 &4834089334457658121
 GameObject:
   m_ObjectHideFlags: 0

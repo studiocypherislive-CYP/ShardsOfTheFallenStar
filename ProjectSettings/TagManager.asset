@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Enemy
+  - Heart
+  - Shards
   layers:
   - Default
   - TransparentFX
@@ -63,6 +65,9 @@ TagManager:
     locked: 0
   - name: Explosion
     uniqueID: 2825848911
+    locked: 0
+  - name: Collectibles
+    uniqueID: 3899469867
     locked: 0
   m_RenderingLayers:
   - Default

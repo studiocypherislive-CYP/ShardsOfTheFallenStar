@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
-using Unity.VisualScripting;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -10,7 +5,6 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     public int maxHealth = 3;
-    public Text health;
     private float movement;
     public float speed = 7f;
     private bool facing_Right;
@@ -32,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     public float attackRadius = 1f;
     public LayerMask attackLayer;
 
+    public Text healthText;
+    private int collectedShards;
+    public Text shardText;
 
     private void Start()
     {
@@ -40,8 +37,10 @@ public class PlayerMovement : MonoBehaviour
         wasGrounded = true;
         facing_Right = true;
         total_Jumps = jump_Count;
-        rb = this.gameObject.GetComponent < Rigidbody2D>();
+        rb = this.gameObject.GetComponent<Rigidbody2D>();
         animator = this.gameObject.GetComponent<Animator>();
+
+        collectedShards = 0;
     }
 
     private void Update()
@@ -51,7 +50,8 @@ public class PlayerMovement : MonoBehaviour
             Die();
         }
 
-        health.text = maxHealth.ToString();
+        shardText.text = collectedShards.ToString();
+        healthText.text = maxHealth.ToString();
 
         movement = Input.GetAxis("Horizontal");
 
@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         if (collInfo == true)
         {
             isGround = true;
-            
+
             // Reset jumps and animation when landing
             if (!wasGrounded)
             {
@@ -77,12 +77,12 @@ public class PlayerMovement : MonoBehaviour
         {
             isGround = false;
         }
-        
+
         wasGrounded = isGround;
 
         Flip();
 
-        if (Mathf.Abs(movement) > 0.1f )
+        if (Mathf.Abs(movement) > 0.1f)
         {
             animator.SetFloat("Run", 1f);
         }
@@ -94,14 +94,14 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             PlayAttackAnimation();
-            
+
         }
 
     }
 
     private void PlayAttackAnimation()
     {
-        int attack_Index = Random.Range(0,3);
+        int attack_Index = Random.Range(0, 3);
 
         if (attack_Index == 0)
         {
@@ -141,12 +141,12 @@ public class PlayerMovement : MonoBehaviour
         if (total_Jumps > 0)
         {
             animator.SetBool("Jump", true);
-            
+
             // Reset Y velocity to ensure consistent jump height
             Vector2 velocity = rb.linearVelocity;
             velocity.y = jumpHeight;
             rb.linearVelocity = velocity;
-            
+
             total_Jumps -= 1;
         }
     }
@@ -163,6 +163,24 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Heart")
+        {
+            maxHealth += 1;
+            collision.gameObject.GetComponent<Animator>().SetTrigger("HeartCollected");
+            Destroy(collision.gameObject, .2f); //last argument is animation ending time/no need to put it
+        }
+
+        if (collision.gameObject.tag == "Shards")
+        {
+            collectedShards++; //same like maxHealth += 1;
+            shardText.text = collectedShards.ToString();
+            collision.gameObject.GetComponent<Animator>().SetTrigger("Shards_Collected");
+            Destroy(collision.gameObject);
+        }
+    }
+
     public void Attack()
     {
         Collider2D hit = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
@@ -172,13 +190,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage()
     {
         if (maxHealth <= 0)
         {
             return;
         }
-        maxHealth -= damage;
+        maxHealth -= 1;
     }
 
     private void Die()
