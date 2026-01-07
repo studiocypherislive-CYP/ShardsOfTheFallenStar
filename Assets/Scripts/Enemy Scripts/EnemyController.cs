@@ -35,6 +35,11 @@ public class EnemyController : MonoBehaviour
             Die();
         }
 
+        if (FindAnyObjectByType<GameManager>().isGameActive == false)
+        {
+            return;
+        }
+
         if (Vector2.Distance(transform.position, player.position) <= attackRange)
         {
             if (player.position.x < transform.position.x && facingRight == true)
@@ -62,6 +67,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             transform.Translate(new Vector2(1f, 0f) * Speed * Time.deltaTime);
+            animator.SetBool("Attack1", false);
         }
 
 

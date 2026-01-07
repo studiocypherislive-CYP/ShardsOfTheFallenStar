@@ -30,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
     private int collectedShards;
     public Text shardText;
 
+    public Transform spawnPoint;
+    public GameObject gameOverUI;
+
     private void Start()
     {
         movement = 0f;
@@ -94,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             PlayAttackAnimation();
+            FindAnyObjectByType<AudioManager>().PlayAttackSound();
 
         }
 
@@ -179,6 +183,11 @@ public class PlayerMovement : MonoBehaviour
             collision.gameObject.GetComponent<Animator>().SetTrigger("Shards_Collected");
             Destroy(collision.gameObject);
         }
+
+        if (collision.gameObject.tag == "Traps")
+        {
+            TakeDamage();
+        }
     }
 
     public void Attack()
@@ -197,11 +206,15 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         maxHealth -= 1;
+        transform.position = spawnPoint.position;
     }
 
     private void Die()
     {
-
+        //FindAnyObjectByType<AudioManager>().PlayExplosionSound();
+        gameOverUI.SetActive(true);
+        FindAnyObjectByType<GameManager>().isGameActive = false;
+        Destroy(this.gameObject);
     }
 
     private void OnDrawGizmos()
