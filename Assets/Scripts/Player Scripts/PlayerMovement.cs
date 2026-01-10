@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         maxHealth -= 1;
-        transform.position = spawnPoint.position;
+        animator.SetTrigger("Hurt");
     }
 
     private void Die()
