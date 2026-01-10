@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour
 {
     public bool isGameActive;
 
+    public static GameManager instance;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,5 +28,7 @@ public class GameManager : MonoBehaviour
     {
 
     }
+
+    
 
 }

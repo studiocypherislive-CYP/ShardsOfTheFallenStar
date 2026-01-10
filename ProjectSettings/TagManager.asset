@@ -61,6 +61,9 @@ TagManager:
   - name: Background1
     uniqueID: 3801879747
     locked: 0
+  - name: Decor
+    uniqueID: 94553047
+    locked: 0
   - name: Game
     uniqueID: 2918739321
     locked: 0
