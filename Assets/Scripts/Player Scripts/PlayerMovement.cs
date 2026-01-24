@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     public float attackRadius = 1f;
     public LayerMask attackLayer;
 
-    public Text healthText;
+    public Slider healthbar;
     private int collectedShards;
     public Text shardText;
 
@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
         total_Jumps = jump_Count;
         rb = this.gameObject.GetComponent<Rigidbody2D>();
         animator = this.gameObject.GetComponent<Animator>();
+        healthbar.maxValue = maxHealth;
 
         collectedShards = 0;
     }
@@ -54,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         shardText.text = collectedShards.ToString();
-        healthText.text = maxHealth.ToString();
+        healthbar.value = maxHealth;
 
         movement = Input.GetAxis("Horizontal");
 

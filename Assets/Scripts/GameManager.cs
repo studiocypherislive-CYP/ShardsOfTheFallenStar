@@ -7,6 +7,18 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,9 +38,6 @@ public class GameManager : MonoBehaviour
 
     public void Menu()
     {
-
+        SceneManager.LoadScene("Menu");
     }
-
-    
-
 }

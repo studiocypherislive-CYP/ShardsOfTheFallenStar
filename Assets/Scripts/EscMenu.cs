@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class EscMenu : MonoBehaviour
 {
     public GameObject escMenuCanvas;
 
@@ -17,5 +18,28 @@ public class NewMonoBehaviourScript : MonoBehaviour
         {
             escMenuCanvas.SetActive(!escMenuCanvas.activeSelf);
         }
+    }
+
+    public void SaveGame()
+    {
+        if (SaveController.instance != null)
+        {
+            SaveController.instance.SaveGame();
+        }
+    }
+
+    public void LoadGame()
+    {
+        if (SaveController.instance != null)
+        {
+            SaveController.instance.LoadGame();
+            // Close the menu after loading
+            escMenuCanvas.SetActive(false);
+        }
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

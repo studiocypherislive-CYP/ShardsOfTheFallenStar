@@ -43,4 +43,17 @@ public class SceneManagement : MonoBehaviour
     {
         SceneManager.LoadSceneAsync(sceneName);
     }
+
+    // NewGame loads SampleScene - SaveController will auto-load saved data after scene loads
+    public void NewGame()
+    {
+        SceneManager.LoadScene("SampleScene");
+    }
+
+    // LoadGame loads SampleScene - SaveController will auto-load saved data after scene loads
+    public void LoadGame()
+    {
+        SceneManager.LoadScene("SampleScene");
+        // SaveController will automatically load game data via OnSceneLoaded event
+    }
 }
