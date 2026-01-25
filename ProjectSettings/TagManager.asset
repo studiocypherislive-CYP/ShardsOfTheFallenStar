@@ -9,6 +9,7 @@ TagManager:
   - Heart
   - Shards
   - Traps
+  - Audio
   layers:
   - Default
   - TransparentFX

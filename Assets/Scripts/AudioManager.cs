@@ -2,17 +2,27 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    public AudioSource attackAudioSource;
-    //public AudioSource explosionAudioSource;
+    [Header ("..............Audio Source............")]
+    [SerializeField] AudioSource musicSource;
+    [SerializeField] AudioSource SFXSource;
 
-    public void PlayAttackSound()
+    [Header("..............Audio Clip............")]
+    public AudioClip background;
+    public AudioClip death;
+    public AudioClip attack;
+    public AudioClip playerRun;
+    public AudioClip collect;
+    public AudioClip jump;
+
+    private void Start()
     {
-        attackAudioSource.Play();
+        musicSource.clip = background;
+        musicSource.Play();
     }
 
-    //public void PlayExplosionSound()
-    //{
-    //    explosionAudioSource.Play();
-    //}
+    public void PlaySFX(AudioClip clip)
+    {
+        SFXSource.PlayOneShot(clip);
+    }
 
 }

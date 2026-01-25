@@ -1,14 +1,17 @@
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class EscMenu : MonoBehaviour
 {
     public GameObject escMenuCanvas;
+    private bool isPaused = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         escMenuCanvas.SetActive(false);
+        Time.timeScale = 1f;
     }
 
     // Update is called once per frame
@@ -16,8 +19,15 @@ public class EscMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            escMenuCanvas.SetActive(!escMenuCanvas.activeSelf);
+            TogglePause();
         }
+    }
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+        escMenuCanvas.SetActive(isPaused);
+        Time.timeScale = isPaused ? 0f : 1f;
     }
 
     public void SaveGame()

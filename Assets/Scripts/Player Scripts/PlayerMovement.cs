@@ -33,6 +33,13 @@ public class PlayerMovement : MonoBehaviour
     public Transform spawnPoint;
     public GameObject gameOverUI;
 
+    private AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     private void Start()
     {
         movement = 0f;
@@ -98,8 +105,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             PlayAttackAnimation();
-            FindAnyObjectByType<AudioManager>().PlayAttackSound();
-
         }
 
     }
@@ -120,6 +125,11 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetTrigger("Attack_3");
         }
+    }
+
+    public void PlayAttackSound()
+    {
+        audioManager.PlaySFX(audioManager.attack);
     }
 
     private void FixedUpdate()
@@ -145,6 +155,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (total_Jumps > 0)
         {
+            audioManager.PlaySFX(audioManager.jump);
             animator.SetBool("Jump", true);
 
             // Reset Y velocity to ensure consistent jump height
@@ -212,7 +223,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Die()
     {
-        //FindAnyObjectByType<AudioManager>().PlayExplosionSound();
         gameOverUI.SetActive(true);
         FindAnyObjectByType<GameManager>().isGameActive = false;
         Destroy(this.gameObject);
