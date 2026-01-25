@@ -11,9 +11,11 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     public float jumpHeight = 8f;
     private Animator animator;
+    private bool isDead = false;
 
     private bool isGround;
     private bool wasGrounded; // Track previous ground state
+    private bool isRunning = false; // Track running state for audio
 
     public Transform groundCheckPoint;
     public float groundCheckRadius = 0.2f;
@@ -56,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (maxHealth <= 0)
+        if (maxHealth <= 0 || transform.position.y <= -6f)
         {
             Die();
         }
@@ -93,13 +95,30 @@ public class PlayerMovement : MonoBehaviour
 
         Flip();
 
-        if (Mathf.Abs(movement) > 0.1f)
+        // Handle running animation and audio
+        bool currentlyRunning = Mathf.Abs(movement) > 0.1f && isGround;
+        
+        if (currentlyRunning)
         {
             animator.SetFloat("Run", 1f);
+            
+            // Start run audio if not already playing
+            if (!isRunning)
+            {
+                isRunning = true;
+                audioManager.PlayLoopingSFX(audioManager.playerRun);
+            }
         }
-        else if (movement < 0.1f)
+        else
         {
             animator.SetFloat("Run", 0f);
+            
+            // Stop run audio if was running
+            if (isRunning)
+            {
+                isRunning = false;
+                audioManager.StopLoopingSFX();
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -155,6 +174,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (total_Jumps > 0)
         {
+            // Stop run audio when jumping
+            if (isRunning)
+            {
+                isRunning = false;
+                audioManager.StopLoopingSFX();
+            }
+            
             audioManager.PlaySFX(audioManager.jump);
             animator.SetBool("Jump", true);
 
@@ -185,6 +211,7 @@ public class PlayerMovement : MonoBehaviour
         {
             maxHealth += 1;
             collision.gameObject.GetComponent<Animator>().SetTrigger("HeartCollected");
+            audioManager.PlaySFX(audioManager.collect);
             Destroy(collision.gameObject, .2f); //last argument is animation ending time/no need to put it
         }
 
@@ -193,6 +220,7 @@ public class PlayerMovement : MonoBehaviour
             collectedShards++; //same like maxHealth += 1;
             shardText.text = collectedShards.ToString();
             collision.gameObject.GetComponent<Animator>().SetTrigger("Shards_Collected");
+            audioManager.PlaySFX(audioManager.collect);
             Destroy(collision.gameObject);
         }
 
@@ -223,9 +251,29 @@ public class PlayerMovement : MonoBehaviour
 
     private void Die()
     {
+        if (isDead) return;
+
+        isDead = true;
+        
+        // Stop run audio when player dies
+        if (isRunning)
+        {
+            isRunning = false;
+            audioManager.StopLoopingSFX();
+        }
+        
+        animator.SetTrigger("Die");
+        audioManager.PlaySFX(audioManager.death);
+
+        GetComponent<PlayerMovement>().enabled = false;
+    }
+
+    public void OnDeathAnimationFinished()
+    {
         gameOverUI.SetActive(true);
         FindAnyObjectByType<GameManager>().isGameActive = false;
-        Destroy(this.gameObject);
+
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()

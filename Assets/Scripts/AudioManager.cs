@@ -25,4 +25,22 @@ public class AudioManager : MonoBehaviour
         SFXSource.PlayOneShot(clip);
     }
 
+    public void PlayLoopingSFX(AudioClip clip)
+    {
+        if (SFXSource.clip != clip || !SFXSource.isPlaying)
+        {
+            SFXSource.clip = clip;
+            SFXSource.loop = true;
+            SFXSource.Play();
+        }
+    }
+
+    public void StopLoopingSFX()
+    {
+        if (SFXSource.isPlaying)
+        {
+            SFXSource.Stop();
+        }
+    }
+
 }
