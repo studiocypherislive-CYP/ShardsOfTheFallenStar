@@ -28,7 +28,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public void GameOver()
+    {
+        isGameActive = false;
+        Time.timeScale = 0f;
     }
 
     public void Retry()

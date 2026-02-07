@@ -8,13 +8,15 @@ public class SaveController : MonoBehaviour
     private string saveLocation;
     public static SaveController instance;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// When true, next game scene load will start fresh at spawn instead of loading save.
+    /// Set by New Game button before loading scene.
+    /// </summary>
+    public static bool IsNewGameRequested { get; private set; }
+
     void Start()
     {
         saveLocation = Path.Combine(Application.persistentDataPath, "saveData.json");
-        
-        // Don't auto-load - only load when explicitly requested
-        // Auto-load causes issues when scene doesn't have Player yet
     }
 
     void Awake()
@@ -23,8 +25,6 @@ public class SaveController : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            
-            // Subscribe to scene loaded event to load game data after scene loads
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -38,15 +38,40 @@ public class SaveController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // Called after a scene is loaded
+    /// <summary>
+    /// Call this before loading the first game scene when the player chooses "New Game".
+    /// </summary>
+    public static void RequestNewGame()
+    {
+        IsNewGameRequested = true;
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Only auto-load in game scenes (not Menu scene)
-        // You can check scene name or build index here
-        if (scene.name != "Menu")
+        if (scene.name == "Menu")
+            return;
+
+        if (IsNewGameRequested)
         {
-            // Small delay to ensure all objects are initialized
+            IsNewGameRequested = false;
+            Invoke(nameof(ApplyNewGameSpawn), 0.1f);
+        }
+        else
+        {
             Invoke(nameof(LoadGameDelayed), 0.1f);
+        }
+    }
+
+    private void ApplyNewGameSpawn()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) return;
+
+        PlayerMovement pm = player.GetComponent<PlayerMovement>();
+        if (pm != null && pm.spawnPoint != null)
+        {
+            player.transform.position = pm.spawnPoint.position;
+            Debug.Log("New game started at spawn.");
         }
     }
 

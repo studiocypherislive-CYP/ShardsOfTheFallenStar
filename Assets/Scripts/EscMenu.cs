@@ -1,4 +1,3 @@
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -43,8 +42,9 @@ public class EscMenu : MonoBehaviour
         if (SaveController.instance != null)
         {
             SaveController.instance.LoadGame();
-            // Close the menu after loading
             escMenuCanvas.SetActive(false);
+            isPaused = false;
+            Time.timeScale = 1f;
         }
     }
 

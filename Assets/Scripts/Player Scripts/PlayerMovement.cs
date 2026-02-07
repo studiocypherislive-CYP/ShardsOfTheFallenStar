@@ -97,11 +97,11 @@ public class PlayerMovement : MonoBehaviour
 
         // Handle running animation and audio
         bool currentlyRunning = Mathf.Abs(movement) > 0.1f && isGround;
-        
+
         if (currentlyRunning)
         {
             animator.SetFloat("Run", 1f);
-            
+
             // Start run audio if not already playing
             if (!isRunning)
             {
@@ -112,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             animator.SetFloat("Run", 0f);
-            
+
             // Stop run audio if was running
             if (isRunning)
             {
@@ -180,7 +180,7 @@ public class PlayerMovement : MonoBehaviour
                 isRunning = false;
                 audioManager.StopLoopingSFX();
             }
-            
+
             audioManager.PlaySFX(audioManager.jump);
             animator.SetBool("Jump", true);
 
@@ -235,7 +235,12 @@ public class PlayerMovement : MonoBehaviour
         Collider2D hit = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayer);
         if (hit)
         {
-            FindAnyObjectByType<EnemyController>().TakeDamage();
+            // Damage the specific enemy that was hit, not the first one in the scene
+            EnemyController enemy = hit.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage();
+            }
         }
     }
 
@@ -254,14 +259,14 @@ public class PlayerMovement : MonoBehaviour
         if (isDead) return;
 
         isDead = true;
-        
+
         // Stop run audio when player dies
         if (isRunning)
         {
             isRunning = false;
             audioManager.StopLoopingSFX();
         }
-        
+
         animator.SetTrigger("Die");
         audioManager.PlaySFX(audioManager.death);
 

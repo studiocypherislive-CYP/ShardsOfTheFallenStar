@@ -1,9 +1,12 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FinishingPortal : MonoBehaviour
 {
     //public bool goNextLevel;
     //public string levelName;
+
+    public GameObject levelComplete;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,11 +20,18 @@ public class FinishingPortal : MonoBehaviour
         
     }
 
+    //public void LevelComplete()
+    //{
+    //    levelComplete.SetActive(true);
+    //}
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            SceneManagement.instance.NextLevel();
+            levelComplete.SetActive(true);
+            FindAnyObjectByType<GameManager>().GameOver();
+            //SceneManagement.instance.NextLevel();
         }
         //else
         //{
